@@ -1,7 +1,34 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from storage import load_db
+from storage import load_db, save_db
+
+
+def handle_add(args: Namespace) -> None:
+    print(f"Adding task: {args.description}")
+
+
+def handle_list(args: Namespace) -> None:
+    print(f"Listing tasks with status: {args.status or 'all'}")
+
+
+def handle_update(args: Namespace) -> None:
+    if args.status is None and args.desc is None:
+        raise ValueError("Provide at least one of --status or --desc.")
+
+    print(f"Updating task {args.id}: status={args.status},description={args.desc}")
+
+
+def handle_mark_in_progress(args: Namespace) -> None:
+    print(f"Marking task {args.id} as in-progress")
+
+
+def handle_mark_done(args: Namespace) -> None:
+    print(f"Marking task {args.id} as done")
+
+
+def handle_delete(args: Namespace) -> None:
+    print(f"Deleting task {args.id}")
 
 
 def create_parser() -> ArgumentParser:
@@ -30,22 +57,26 @@ def create_parser() -> ArgumentParser:
         "description",
         help="Description of the task",
     )
+    add_parser.set_defaults(handler=handle_add)
 
     list_parser = subparsers.add_parser(
         "list",
         help="List tasks",
     )
+
     list_parser.add_argument(
-        "status",
-        nargs="?",
+        "-s",
+        "--status",
         choices=["todo", "in-progress", "done"],
         help="Filter tasks by status",
     )
+    list_parser.set_defaults(handler=handle_list)
 
     update_parser = subparsers.add_parser(
         "update",
-        help="Update a task's description",
+        help="Update a task's description or status",
     )
+
     update_parser.add_argument(
         "-i",
         "--id",
@@ -53,47 +84,75 @@ def create_parser() -> ArgumentParser:
         type=int,
         help="ID of the task to update",
     )
+
     update_parser.add_argument(
         "-s",
         "--status",
         choices=["todo", "in-progress", "done"],
         help="New task status",
     )
+    update_parser.add_argument(
+        "-d",
+        "--desc",
+        help="New task description",
+    )
+    update_parser.set_defaults(handler=handle_update)
 
     mark_in_progress = subparsers.add_parser(
-        "mark-inprogress", help="Change a task's status to in progress"
+        "mark-in-progress",
+        help="Mark a task as in progress",
     )
     mark_in_progress.add_argument(
-        "--id", required=True, type=int, help="ID of the task to mark in progress"
+        "-i",
+        "--id",
+        required=True,
+        type=int,
+        help="ID of the task to mark in progress",
     )
+    mark_in_progress.set_defaults(handler=handle_mark_in_progress)
 
     mark_done = subparsers.add_parser(
-        "mark-done", help="Change a task's status to mark-done"
+        "mark-done",
+        help="Mark a task as done",
     )
-    mark_done.add_argument("--id", required=True, help="ID of the task to mark as done")
+    mark_done.add_argument(
+        "-i",
+        "--id",
+        required=True,
+        type=int,
+        help="ID of the task to mark as done",
+    )
+    mark_done.set_defaults(handler=handle_mark_done)
 
-    delete = subparsers.add_parser("delete", help="Delete a task")
-    delete.add_argument(
-        "--id", requiired=True, required=True, help="ID of the task to delete"
+    delete = subparsers.add_parser(
+        "delete",
+        help="Delete a task",
     )
+    delete.add_argument(
+        "-i",
+        "--id",
+        required=True,
+        type=int,
+        help="ID of the task to delete",
+    )
+    delete.set_defaults(handler=handle_delete)
 
     return parser
 
 
 def main() -> None:
-    path = Path("tasks.json")
-
     parser = create_parser()
     args = parser.parse_args()
-
-    print(args)
+    path = Path(args.db).expanduser()
 
     try:
         database = load_db(path)
         print(database)
+        args.handler(args)
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
 
-    except ValueError as exc:
-        print(f"Error: {exc}")
+    save_db(database=database, path=path)
 
 
 if __name__ == "__main__":

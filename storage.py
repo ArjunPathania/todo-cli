@@ -10,14 +10,10 @@ TaskStatus: TypeAlias = Literal["done", "in-progress", "todo"]
 
 DatabaseRow = TypedDict(
     "DatabaseRow",
-    {"description": str, 
-     "status": TaskStatus, 
-     "createdAt": str, 
-     "updatedAt": str},
+    {"description": str, "status": TaskStatus, "createdAt": str, "updatedAt": str},
 )
 
 Database: TypeAlias = dict[str, DatabaseRow]
-
 
 
 def load_db(path: Path) -> Database:
@@ -37,12 +33,7 @@ def load_db(path: Path) -> Database:
     return data
 
 
-def save_db(database:Database,path:Path)->None:
+def save_db(database: Database, path: Path) -> None:
     """Save  the database as JSON."""
-    with open(path,mode='w') as file:
-        json.dump(database,file,indent=2,ensure_ascii=False)
-
-
-
-
-
+    with open(path, mode="w") as file:
+        json.dump(database, file, indent=2, ensure_ascii=False)
