@@ -26,7 +26,7 @@ No third-party runtime dependencies are required.
 Clone the repository and enter the project directory:
 
 ```bash
-git clone <https://github.com/ArjunPathania/todo-cli>
+git clone https://github.com/ArjunPathania/todo-cli
 cd todo-cli
 ```
 
