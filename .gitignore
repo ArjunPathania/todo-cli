@@ -13,7 +13,4 @@ tasks.json
 # Test-generated files
 .coverage
 
-# Mise tools 
-mise.toml
-
-task.json
+taskly_cli.egg-info/
