@@ -27,7 +27,7 @@ Clone the repository and enter the project directory:
 
 ```bash
 git clone <https://github.com/ArjunPathania/todo-cli>
-cd task-tracker
+cd todo-cli
 ```
 
 Create and activate a virtual environment:
