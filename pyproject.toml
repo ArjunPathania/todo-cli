@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taskly-cli"
+version = "0.1.0"
+description = "A simple command-line task tracker built with Python"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+taskly = "main:main"
+
+[tool.setuptools]
+py-modules = ["main", "manager", "storage"]
