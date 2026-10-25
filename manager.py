@@ -87,6 +87,11 @@ def set_task_status(
 def delete_task(database: Database, task_id: int) -> None:
     """Delete a task from the in-memory database."""
     key = str(task_id)
+
     if key not in database:
         raise KeyError(f"Task with ID {task_id} does not exist.")
-    del database[key]
+    for id in database:
+        if int(id) > int(key):
+            database[str(int(id) - 1)] = database[id]
+    max_id = max(int(task_id) for task_id in database)
+    database.pop(str(max_id))
