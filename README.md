@@ -2,7 +2,7 @@
 
 A simple command-line task tracker built with Python using only the standard library. Taskly lets you create, update, delete, and organize tasks directly from your terminal, with persistent JSON storage.
 
-Project URL: <https://github.com/ArjunPathania/todo-cli>
+Project URL: <https://roadmap.sh/projects/task-tracker>
 
 ## Features
 
