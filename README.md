@@ -30,6 +30,7 @@ git clone https://github.com/ArjunPathania/todo-cli
 cd todo-cli
 ```
 
+<https://github.com/ArjunPathania/todo-cli>
 Create and activate a virtual environment:
 
 ```bash
